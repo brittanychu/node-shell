@@ -1,30 +1,53 @@
 var fs = require('fs');
+var request = require('request')
+
+function done(output){
+    process.stdout.write(output);
+    process.stdout.write("\nprompt > ");
+};
 
 module.exports = {
 
     date: function(filename) {
-        process.stdout.write(new Date().toLocaleString());
-        process.stdout.write('\nprompt >');
+        done(new Date().toLocaleString());
     },
 
     pwd: function(filename){
-        process.stdout.write(process.cwd());
-        process.stdout.write('\nprompt >');
+        done(process.cwd());
     },
 
     ls: function(filename){
-        return fs.readdir(filename, function(err, files) {
+        // return fs.readdir(filename, function(err, files) {
+        //     if (err) throw err;
+        //     files.forEach(function(file) {
+        //       process.stdout.write(file.toString() + "\n");
+        //     })
+        //     process.stdout.write("\nprompt > ");
+        //   });
+
+        // var output = "";
+        // fs.readdir('.', function(err, files) {
+        // files.forEach(function(file) {
+        //     output += file.toString() + "\n";
+        // })
+        // done(output);
+        // });
+
+
+        let result = [];
+        fs.readdir(filename, function(err, files) {
             if (err) throw err;
             files.forEach(function(file) {
-              process.stdout.write(file.toString() + "\n");
+              result.push(file);
             })
-            process.stdout.write("\nprompt > ");
-          });
+            done(result.join("\n"))
+        });
     },
 
     echo: function(filename) {
-        process.stdout.write(filename);
-        process.stdout.write('\nprompt >');
+        return done(filename);
+        // process.stdout.write(filename);
+        // process.stdout.write('\nprompt >');
     },
 
     cat: function(filename) {
@@ -96,5 +119,15 @@ module.exports = {
             process.stdout.write(uniqArr.join("\n"));
             process.stdout.write("\nprompt > ");
           });
+    },
+
+    curl: function(filename) {
+        return request(filename, function(error, response, body){
+            if (error) throw error;
+            if (response.statusCode) {
+                process.stdout.write(body);
+            }
+            process.stdout.write("\nprompt > ");
+        })
     }
 }

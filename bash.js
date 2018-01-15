@@ -27,10 +27,15 @@ process.stdin.on('data', function(data) {
     commands.wc(remainingArgs);
   } else if (cmd === "uniq") {
     commands.uniq(remainingArgs);
+  } else if (cmd === 'curl'){
+    commands.curl("http://www." + remainingArgs);
   }
 
 
 });
+
+
+
 
 // running cat on this file (cat bash.js) prints the code
 // running head on this file (head bash.js) prints the first 12 lines of code
